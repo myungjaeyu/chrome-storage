@@ -16,4 +16,8 @@ class ChromeStorage {
         chrome.storage[this.STORAGE_TYPE].set(...args)
     }
 
+    getAll() {
+        return new Promise(resolve => this._get(resolve))
+    }
+
 }
