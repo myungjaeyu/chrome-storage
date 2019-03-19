@@ -16,6 +16,10 @@ class ChromeStorage {
         chrome.storage[this.STORAGE_TYPE].set(...args)
     }
 
+    headKey(key) {
+        return key.replace(/(.*?)(\.\w+|\[.*?\])/g, '$1')
+    }
+
     is_nestedKey(key) {
         return /(\.*)|\[(.*?)\]/.test(key)
     }
@@ -37,7 +41,15 @@ class ChromeStorage {
     }
 
     get(key) {
-        return new Promise(resolve => this._get(key, (e) => resolve(e[key])))
+        return new Promise(resolve => 
+            this._get(this.headKey(key), e =>
+                resolve(
+                    this.is_nestedKey(key) ? 
+                    this.parser(key)
+                        .reduce((acc, cur) => acc[cur], e)
+                    :
+                    e[key])))
+
     }
 
 }
