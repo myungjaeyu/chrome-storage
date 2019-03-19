@@ -20,4 +20,8 @@ class ChromeStorage {
         return new Promise(resolve => this._get(resolve))
     }
 
+    get(key) {
+        return new Promise(resolve => this._get(key, (e) => resolve(e[key])))
+    }
+
 }
