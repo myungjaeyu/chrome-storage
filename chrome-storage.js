@@ -1,0 +1,7 @@
+class ChromeStorage {
+
+    constructor() {
+
+    }
+
+}
