@@ -8,4 +8,12 @@ class ChromeStorage {
 
     }
 
+    _get(...args) {
+        chrome.storage[this.STORAGE_TYPE].get(...args)
+    }
+
+    _set(...args) {
+        chrome.storage[this.STORAGE_TYPE].set(...args)
+    }
+
 }
