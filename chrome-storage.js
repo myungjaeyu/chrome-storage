@@ -52,4 +52,8 @@ class ChromeStorage {
 
     }
 
+    set(key, value) {
+        return new Promise(resolve => this._set({ [key] : value }, resolve))
+    }
+
 }
