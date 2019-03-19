@@ -36,6 +36,21 @@ class ChromeStorage {
 
     }
 
+    refer(data, keys) {
+        return keys.reduce((acc, cur, i) => {
+
+            keys.length -1 !== i && 
+                (acc.temp = acc.temp[cur] = typeof acc.temp[cur] !== 'object' ? {} : acc.temp[cur] || {})
+
+            return acc
+        }, {
+            key : keys.slice(-1)[0],
+            temp : data = typeof data === 'object' ? data : {},
+            data
+        })
+
+    }
+
     getAll() {
         return new Promise(resolve => this._get(resolve))
     }
@@ -53,7 +68,28 @@ class ChromeStorage {
     }
 
     set(key, value) {
-        return new Promise(resolve => this._set({ [key] : value }, resolve))
+
+        if (typeof key !== 'string' || !key) throw 'invalid key'
+
+        return new Promise(resolve => {
+
+            let head = this.headKey(key),
+                keys = this.parser(key).filter(e => e !== head),
+                set = data => this._set({ [head] : data }, resolve)
+
+            this.get(head)
+                .then(e =>
+                    set(!keys.length ? 
+                        value 
+                        : 
+                        (({ data, temp, key}) => {
+                            temp[key] = value
+                            return data
+                        })
+                        (this.refer(e, keys))))
+
+        })
+
     }
 
 }
