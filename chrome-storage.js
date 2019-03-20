@@ -20,6 +20,10 @@ class ChromeStorage {
         chrome.storage[this.STORAGE_TYPE].remove(...args)
     }
 
+    clear() {
+        return new Promise(resolve => chrome.storage[this.STORAGE_TYPE].clear(resolve))
+    }
+
     headKey(key) {
         return key.replace(/(.*?)(\.\w+|\[.*?\])/g, '$1')
     }
