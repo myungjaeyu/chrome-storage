@@ -121,7 +121,19 @@ class ChromeStorage {
     }
 
     remove(key) {
-        return new Promise(resolve => this._remove(key, resolve))
+        return new Promise(resolve => {
+
+            if (typeof key !== 'string' || !key) throw 'invalid key'
+
+            this.deliver(key)
+                .then(({ keys, set, handleRefer }) => 
+                    !keys.length ? 
+                    this._remove(key, resolve) 
+                    : 
+                    set(handleRefer((temp, key) => delete temp[key])).then(resolve))
+
+        })
+
     }
 
 }
