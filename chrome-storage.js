@@ -36,7 +36,7 @@ class ChromeStorage {
 
     }
 
-    refer(data, keys) {
+    refer(obj, keys) {
         return keys.reduce((acc, cur, i) => {
 
             keys.length -1 !== i && 
@@ -45,9 +45,28 @@ class ChromeStorage {
             return acc
         }, {
             key : keys.slice(-1)[0],
-            temp : data = typeof data === 'object' ? data : {},
-            data
+            temp : obj = typeof obj === 'object' ? obj : {},
+            obj
         })
+
+    }
+
+    async deliver(key) {
+
+        let head = this.headKey(key),
+            keys = this.parser(key).filter(e => e !== head),
+            data = await this.get(head)
+
+        return {
+            keys,
+            data,
+            set : data => new Promise(resolve => this._set({ [head] : data }, resolve)),
+            handleRefer : callback => {
+                let { obj, temp, key } = this.refer(data, keys)
+                callback(temp, key)
+                return obj
+            }
+        }
 
     }
 
@@ -67,28 +86,13 @@ class ChromeStorage {
 
     }
 
-    set(key, value) {
+    async set(key, value) {
 
         if (typeof key !== 'string' || !key) throw 'invalid key'
 
-        return new Promise(resolve => {
+        const { keys, set, handleRefer } = await this.deliver(key)
 
-            let head = this.headKey(key),
-                keys = this.parser(key).filter(e => e !== head),
-                set = data => this._set({ [head] : data }, resolve)
-
-            this.get(head)
-                .then(e =>
-                    set(!keys.length ? 
-                        value 
-                        : 
-                        (({ data, temp, key}) => {
-                            temp[key] = value
-                            return data
-                        })
-                        (this.refer(e, keys))))
-
-        })
+        await set(!keys.length ? value : handleRefer((temp, key) => temp[key] = value))
 
     }
 
