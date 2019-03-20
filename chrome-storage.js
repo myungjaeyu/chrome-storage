@@ -96,4 +96,24 @@ class ChromeStorage {
 
     }
 
+    async push(key, value) {
+
+        if (typeof key !== 'string' || !key) throw 'invalid key'
+
+        let { data, keys, set, handleRefer } = await this.deliver(key),
+            verify = (data) => {
+                if (data && !Array.isArray(data)) throw `must be an array type. (key data: ${ JSON.stringify(data) })`
+                if (!data) return false
+                if (Array.isArray(data)) return true
+            }
+
+        !keys.length ?
+        verify(data) ? data.push(value) : (data = [], data.push(value))
+        :
+        data = handleRefer((temp, key) => verify(temp[key]) ? temp[key].push(value) : (temp[key] = [], temp[key].push(value)))
+
+        await set(data)
+
+    }
+
 }
