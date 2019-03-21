@@ -13,31 +13,21 @@
     is('Tests whether the localStorage type is local.', cs.STORAGE_TYPE, 'local')
 
 
-    is('headKey : aa', cs.headKey('aa'), 'aa')
-    is('headKey : aa.bb', cs.headKey('aa.bb'), 'aa')
-    is('headKey : aa.bb.cc', cs.headKey('aa.bb.cc'), 'aa')
-    is('headKey : aa[0]', cs.headKey('aa[0]'), 'aa')
-    is('headKey : aa[0][0]', cs.headKey('aa[0][0]'), 'aa')
-    is('headKey : aa[0][0].bb', cs.headKey('aa[0][0].bb'), 'aa')
-
-    is('is_nestedKey : aa', cs.is_nestedKey('aa'), false)
-    is('is_nestedKey : aa.bb', cs.is_nestedKey('aa.bb'), true)
-    is('is_nestedKey : aa.bb.cc', cs.is_nestedKey('aa.bb.cc'), true)
-    is('is_nestedKey : aa[0]', cs.is_nestedKey('aa[0]'), true)
-    is('is_nestedKey : aa[0][0]', cs.is_nestedKey('aa[0][0]'), true)
-    is('is_nestedKey : aa[0][0].bb', cs.is_nestedKey('aa[0][0].bb'), true)
-
-
     let parser = cs.parser('aa')
 
     is(`Tests whether the length of the parser('aa') is 1`, parser.length, 1)
     is(`Tests whether the first parameter of the parser('aa') is 'aa'`, parser[0], 'aa')
+    is('headKey : aa', cs.headKey(parser), 'aa')
+    is('is_nestedKey : aa', cs.is_nestedKey(parser), false)
+
 
     parser = cs.parser('aa.aa')
 
     is(`parser length 2 : aa.aa`, parser.length, 2)
     is('parser 0 : aa.aa', parser[0], 'aa')
     is('parser 1 : aa.aa', parser[1], 'aa')
+    is('headKey : aa.aa', cs.headKey(parser), 'aa')
+    is('is_nestedKey : aa.aa', cs.is_nestedKey(parser), true)
 
 
     parser = cs.parser('aa.aa.aa.aa.aa.aa')
