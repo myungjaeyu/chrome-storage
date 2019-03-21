@@ -29,7 +29,7 @@ class ChromeStorage {
     }
 
     is_nestedKey(key) {
-        return /(\.*)|\[(.*?)\]/.test(key)
+        return /\.*(\.\w|\[*\])/.test(key)
     }
 
     parser(queries) { // obj.obj.obj[3].obj[2].obj.aa.bb[3]
