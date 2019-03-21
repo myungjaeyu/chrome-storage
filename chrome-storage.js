@@ -24,24 +24,16 @@ class ChromeStorage {
         return new Promise(resolve => chrome.storage[this.STORAGE_TYPE].clear(resolve))
     }
 
-    headKey(key) {
-        return key.replace(/(.*?)(\.\w+|\[.*?\])/g, '$1')
+    headKey(keys) {
+        return keys[0]
     }
 
-    is_nestedKey(key) {
-        return /\.*(\.\w|\[*\])/.test(key)
+    is_nestedKey(keys) {
+        return keys.length > 1
     }
 
     parser(queries) { // obj.obj.obj[3].obj[2].obj.aa.bb[3]
-        return queries
-            .split('.')
-            .reduce((acc, cur) =>
-                acc.concat(
-                    this.is_nestedKey(cur) ? 
-                    cur.replace(/(.*)\[(.*?)\]/, '$1.$2').split('.') 
-                    : 
-                    cur), [])
-
+        return queries.match(/\w+|\[w+\]/g)
     }
 
     refer(obj, keys) {
@@ -61,9 +53,11 @@ class ChromeStorage {
 
     async deliver(key) {
 
-        let head = this.headKey(key),
-            keys = this.parser(key).filter(e => e !== head),
+        let keys = this.parser(key),
+            head = this.headKey(keys),
             data = await this.get(head)
+
+        keys = keys.slice(1)
 
         return {
             keys,
@@ -83,12 +77,16 @@ class ChromeStorage {
     }
 
     get(key) {
+
+        if (typeof key !== 'string' || !key) throw 'invalid key'
+
+        const keys = this.parser(key)
+
         return new Promise(resolve => 
-            this._get(this.headKey(key), e =>
+            this._get(this.headKey(keys), e =>
                 resolve(
-                    this.is_nestedKey(key) ? 
-                    this.parser(key)
-                        .reduce((acc, cur) => acc[cur], e)
+                    this.is_nestedKey(keys) ? 
+                    keys.reduce((acc, cur) => acc[cur], e)
                     :
                     e[key])))
 
