@@ -108,7 +108,7 @@ class ChromeStorage {
 
         let { data, keys, set, handleRefer } = await this.deliver(key),
             verify = (data) => {
-                if (data && !Array.isArray(data)) throw `must be an array type. (key data: ${ JSON.stringify(data) })`
+                if (data === 0 || (data && !Array.isArray(data))) throw `must be an array type. (key data: ${ JSON.stringify(data) })`
                 if (!data) return false
                 if (Array.isArray(data)) return true
             }
