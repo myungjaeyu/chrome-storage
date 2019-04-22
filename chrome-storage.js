@@ -32,8 +32,8 @@ class ChromeStorage {
         return keys.length > 1
     }
 
-    parser(queries) { // obj.obj.obj[3].obj[2].obj.aa.bb[3]
-        return queries.match(/\w+|\[w+\]/g)
+    parser(queries) {
+        return queries.split(/\//g)
     }
 
     refer(obj, keys) {
