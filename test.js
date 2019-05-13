@@ -21,7 +21,7 @@
     is('is_nestedKey : aa', cs.is_nestedKey(parser), false)
 
 
-    parser = cs.parser('aa.aa')
+    parser = cs.parser('aa/aa')
 
     is(`parser length 2 : aa.aa`, parser.length, 2)
     is('parser 0 : aa.aa', parser[0], 'aa')
@@ -30,7 +30,7 @@
     is('is_nestedKey : aa.aa', cs.is_nestedKey(parser), true)
 
 
-    parser = cs.parser('aa.aa.aa.aa.aa.aa')
+    parser = cs.parser('aa/aa/aa/aa/aa/aa')
 
     is('parser length 6 : aa.aa.aa.aa.aa.aa', parser.length, 6)
     is('parser 0 : aa.aa.aa.aa.aa.aa', parser[0], 'aa')
@@ -41,7 +41,7 @@
     is('parser 5 : aa.aa.aa.aa.aa.aa', parser[5], 'aa')        
 
 
-    parser = cs.parser('obj.obj.obj[3].obj[2].obj.aa.bb[3]')
+    parser = cs.parser('obj/obj/obj/3/obj/2/obj/aa/bb/3')
 
     is('parser length 10 : obj.obj.obj[3].obj[2].obj.aa.bb[3]', parser.length, 10)
     is('parser 0 : obj.obj.obj[3].obj[2].obj.aa.bb[3]', parser[0], 'obj')
@@ -55,7 +55,7 @@
     is('parser 8 : obj.obj.obj[3].obj[2].obj.aa.bb[3]', parser[8], 'bb')
     is('parser 9 : obj.obj.obj[3].obj[2].obj.aa.bb[3]', parser[9], '3')
 
-    parser = cs.parser('obj[0][1][2][3][4][5][6][7][8]')
+    parser = cs.parser('obj/0/1/2/3/4/5/6/7/8')
 
     is('parser length 10 : obj[0][1][2][3][4][5][6][7][8]', parser.length, 10)
     is('parser 0 : obj[0][1][2][3][4][5][6][7][8]', parser[0], 'obj')
@@ -74,8 +74,8 @@
     is('Tests whether the storage is all emptied', Object.keys(await cs.getAll()).length, 0)
 
 
-    await cs.set('aa.bb.cc', 'coco')
-    is(`Tests whether the 'coco' is added to the 'aa.bb.cc' key in the Storage`, await cs.get('aa.bb.cc'), 'coco')
+    await cs.set('aa/bb/cc', 'coco')
+    is(`Tests whether the 'coco' is added to the 'aa.bb.cc' key in the Storage`, await cs.get('aa/bb/cc'), 'coco')
 
 
     let aa = await cs.get('aa')
@@ -86,7 +86,7 @@
 
 
     await cs.set('aa', { bb2 : { cc2 : 'codi' } })
-    is(`aa === aa.bb2.cc2, aa.bb2.cc2 === 'codi'`, await cs.get('aa.bb2.cc2'), 'codi')
+    is(`aa === aa.bb2.cc2, aa.bb2.cc2 === 'codi'`, await cs.get('aa/bb2/cc2'), 'codi')
 
     aa = await cs.get('aa')
     is(`aa === Object`, aa.constructor, Object)
@@ -98,8 +98,8 @@
     is(`aa.bb2.cc2 === 'codi'`, aa.bb2.cc2, 'codi')
 
 
-    await cs.set('info.items', ['ak47', 'glock', 'knife'])
-    let infoItems = await cs.get('info.items')
+    await cs.set('info/items', ['ak47', 'glock', 'knife'])
+    let infoItems = await cs.get('info/items')
 
     is(`info.items === Array`, infoItems.constructor, Array)
     is(`info.items[0] === 'ak47'`, infoItems[0], 'ak47')
@@ -107,8 +107,8 @@
     is(`info.items[2] === 'knife'`, infoItems[2], 'knife')
 
 
-    await cs.push('info.items', 'knuckle')
-    infoItems = await cs.get('info.items')
+    await cs.push('info/items', 'knuckle')
+    infoItems = await cs.get('info/items')
 
 
     is(`info.items lenth === 4`, infoItems.length, 4)
